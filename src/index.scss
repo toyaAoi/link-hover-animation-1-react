@@ -1,0 +1,375 @@
+@import url("https://fonts.googleapis.com/css2?family=Alumni+Sans+Pinstripe:ital@0;1&family=Outfit:wght@100..900&family=Quintessential&display=swap");
+
+// custom cursor
+.cursor {
+  display: none;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  top: 0;
+  left: 0;
+  position: fixed;
+  will-change: transform;
+  z-index: 1000;
+  transition: transform 75ms ease-out;
+}
+
+.cursor-border {
+  position: absolute;
+  border: 1px solid #fff5;
+  border-radius: 50%;
+  box-shadow: 0 0 4px 1px #fff5;
+  backdrop-filter: blur(5px) brightness(2);
+  height: 1rem;
+  width: 1rem;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  transition: scale 360ms ease-out, backdrop-filter 360ms ease-out;
+}
+
+.cursor.cursor--initialized {
+  display: block;
+}
+
+.cursor.cursor--off-screen {
+  opacity: 0;
+}
+
+.cursor.cursor--focused .cursor-border,
+.cursor.cursor--focused-view .cursor-border {
+  backdrop-filter: blur(0.5px) brightness(1);
+  scale: 1.5;
+}
+// custom cursor ^^^
+
+// transitions
+$fade: opacity 0.75s ease-in-out;
+$slide: transform 0.75s ease-out;
+$clip: clip-path 0.75s ease-out;
+
+$content-element-position: fixed;
+$title-font: "Quintessential", serif;
+$clip-full: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+
+// utils
+.fade {
+  opacity: 0;
+}
+
+.variant-1 {
+  .content {
+    .title {
+      transform: translateX(-4rem);
+    }
+
+    .text.less {
+      transform: translateY(4rem);
+    }
+
+    .text.more {
+      transform: translateX(4rem);
+    }
+  }
+
+  .poster {
+    clip-path: $clip-full !important;
+  }
+}
+
+.variant-2 {
+  .content {
+    .title {
+      transform: translateX(4rem);
+    }
+
+    .text.less {
+      transform: translateY(4rem);
+    }
+
+    .text.more {
+      transform: translateY(-4rem);
+    }
+  }
+
+  .poster {
+    clip-path: $clip-full !important;
+  }
+}
+
+.variant-3 {
+  .content {
+    .title {
+      transform: translateX(4rem);
+    }
+
+    .text.less {
+      transform: translateY(-4rem);
+    }
+
+    .text.more {
+      transform: translateY(4rem);
+    }
+  }
+
+  .poster {
+    clip-path: $clip-full !important;
+  }
+}
+// utils ^^^
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  color: white;
+
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  background: #000;
+
+  font-weight: 200;
+}
+
+#main-bg {
+  height: 100vh;
+  width: 100vw;
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background: url("./assets/main-bg.gif") no-repeat center center / cover;
+  filter: blur(3px) brightness(0.3);
+
+  transition: $fade;
+}
+
+#container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+
+  nav {
+    min-width: 12.5rem;
+    flex-basis: 15%;
+    z-index: 10;
+
+    ul {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1rem;
+      gap: 0.25rem;
+
+      li {
+        list-style-type: none;
+        display: block;
+
+        padding: 0.5rem 1.2rem;
+        border-radius: 3rem;
+        backdrop-filter: blur(3px) brightness(1.4);
+        border: 1px solid #fff2;
+      }
+    }
+  }
+
+  #cover {
+    flex-grow: 1;
+    transition: $fade;
+    z-index: 5;
+
+    & > * {
+      height: 50%;
+    }
+
+    .cover-up {
+      display: flex;
+
+      & > * {
+        // contains 2 children
+        flex-basis: 50%;
+      }
+
+      p {
+        width: 50%;
+        position: relative;
+        top: 50%;
+        padding-left: 24px;
+      }
+    }
+
+    .cover-down {
+      h1 {
+        font-family: $title-font;
+        font-weight: 400;
+        font-size: 5.5rem;
+        line-height: 1.2;
+
+        position: relative;
+        top: 20%;
+        margin: auto;
+        width: min-content;
+
+        span:first-child {
+          position: relative;
+          left: -10rem;
+        }
+      }
+    }
+  }
+
+  #contents-container {
+    z-index: 1;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+
+    .content {
+      transition: $fade;
+      z-index: 5;
+
+      & > * {
+        position: $content-element-position;
+      }
+
+      .content-bg {
+        top: 0;
+        left: 0;
+        height: 100vw;
+        width: 100vh;
+        // translate and rotation because original videos are rotated
+        // i know it's unnecessary complexity
+        transform: translateY(100vh) rotate(-90deg);
+        transform-origin: top left;
+        filter: brightness(0.3);
+
+        video {
+          border: 1px solid #fff;
+          min-height: 100%;
+          min-width: 100%;
+
+          max-width: 100%;
+          max-height: 105%;
+
+          object-fit: cover;
+        }
+      }
+
+      p {
+        transition: $slide;
+      }
+
+      .title {
+        font-size: 5.5rem;
+        font-family: $title-font;
+      }
+
+      .text {
+        &.less {
+          width: 10%;
+        }
+
+        &.more {
+          width: 20%;
+        }
+      }
+    }
+
+    .poster {
+      position: $content-element-position;
+      max-height: 50vh;
+      max-width: 50vh;
+      border-radius: 0.5rem;
+
+      transition: $clip;
+    }
+
+    // Variant 1
+    .content-wrapper:nth-child(3n -2) {
+      .content {
+        .title {
+          top: 50%;
+          left: 25%;
+        }
+
+        .text.less {
+          top: 65%;
+          right: 30%;
+        }
+
+        .text.more {
+          top: 12%;
+          left: 40%;
+        }
+      }
+
+      .poster {
+        right: 2%;
+        bottom: 5%;
+        clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+      }
+    }
+
+    // Variant 2
+    .content-wrapper:nth-child(3n-1) {
+      .content {
+        .title {
+          top: 65%;
+          left: 32%;
+        }
+
+        .text.less {
+          top: 10%;
+          left: 30%;
+        }
+
+        .text.more {
+          top: 85%;
+          right: 10%;
+        }
+      }
+
+      .poster {
+        top: 8%;
+        right: 12%;
+        clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
+      }
+    }
+
+    // Variant 3
+    .content-wrapper:nth-child(3n) {
+      .content {
+        .title {
+          bottom: 10%;
+          right: 10%;
+        }
+
+        .text.less {
+          bottom: 8%;
+          left: 20%;
+        }
+
+        .text.more {
+          top: 15%;
+          right: 10%;
+        }
+      }
+
+      .poster {
+        top: 8%;
+        left: 20%;
+        clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+      }
+    }
+  }
+}
